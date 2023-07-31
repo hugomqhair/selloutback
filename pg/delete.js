@@ -40,5 +40,6 @@ async function deletarTudo(dados) {
     }
   }
   
+  
   // Chama a função para gravar os dados
   //deletarTudo();
