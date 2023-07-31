@@ -5,6 +5,7 @@ const cors = require("cors")
 
 const select = require("./pg/select")
 const insert = require("./pg/insert")
+const deletar = require("./pg/delete")
 
 app.use(cors())
 app.use(bodyParser.urlencoded({extended: false}));
@@ -15,6 +16,14 @@ app.get("/select", async (req, res) => {
     let dados = await select()
     console.log('retorno select', dados)
     res.json(dados);
+});
+
+app.get("/delete", async (req, res) => {
+    res.statusCode = 200;
+    let dados = await deletar()
+    if (dados==='OK'){
+        res.send('Tudo foi apagado na tabela TESTE01!!!');
+    }
 });
 
 

@@ -14,7 +14,7 @@ const config = {
 
 // Função para gravar dados no banco de dados
 module.exports = 
-async function gravarDados(dados) {
+async function deletarTudo(dados) {
     // Crie uma instância do cliente PostgreSQL
     const client = new Client(config);
   
@@ -24,14 +24,14 @@ async function gravarDados(dados) {
   
   
       // Consulta SQL para inserir os dados na tabela
-      const query = 'INSERT INTO teste01 (texto, dtlog)  VALUES ($1, CURRENT_DATE) RETURNING *';
+      const query = 'DELETE FROM teste01';
   
       // Executa a consulta passando os dados como parâmetros
-      const resultado = await client.query(query, [dados]);
+      const resultado = await client.query(query);
   
       // Exibe o resultado
-      console.log('Dados gravados com sucesso:', resultado.rows[0]);
-      return await resultado.rows[0]
+      console.log('Todos dados foram apagados na tabela TESTE01');
+      return 'OK'
     } catch (err) {
       console.error('Erro ao gravar dados:', err);
     } finally {
@@ -41,4 +41,4 @@ async function gravarDados(dados) {
   }
   
   // Chama a função para gravar os dados
-  //gravarDados();
+  //deletarTudo();
