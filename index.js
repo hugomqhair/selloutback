@@ -18,6 +18,15 @@ app.get("/select", async (req, res) => {
     res.json(dados);
 });
 
+app.get("/consulta", async (req, res) => {
+    //Esta consulta usa dados da query para buscar na tabela, exemplo http://localhost:3000/consulta?operacao=produto
+    let consulta = req.query
+    res.statusCode = 200;
+    let dados = await select(consulta.operacao)
+    res.json(dados);
+});
+
+
 app.get("/delete", async (req, res) => {
     res.statusCode = 200;
     let dados = await deletar()

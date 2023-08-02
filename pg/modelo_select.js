@@ -4,15 +4,14 @@ const { Client } = require('pg');
 const config = {
     user: 'postgres',
     host: 'localhost',
-    database: 'sellout',
+    database: 'teste',
     password: 'postgres',
     port: 5432, // Porta padrão do PostgreSQLQL
 };
 
 // Função para realizar a consulta e retornar os dados
 module.exports =
-async function consultarDados(table) {
-  console.log('table', table)
+async function consultarDados() {
   // Crie uma instância do cliente PostgreSQL
   const client = new Client(config);
 
@@ -21,7 +20,7 @@ async function consultarDados(table) {
     await client.connect();
 
     // Consulta SQL para selecionar os dados da tabela
-    const query = `SELECT * FROM ${table}`;
+    const query = 'SELECT * FROM teste01';
 
     // Executa a consulta
     const resultado = await client.query(query);
