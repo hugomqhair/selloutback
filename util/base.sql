@@ -21,12 +21,13 @@ INSERT INTO loja (nome) VALUES ('SUMIRE');
 INSERT INTO loja (nome) VALUES ('GOYA');
 
 --Produtos
+DROP TABLE produto;
 CREATE TABLE produto (
     id serial PRIMARY KEY,
     descrprod varchar(50) NOT NULL,
     dtcad timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP -- ON UPDATE CURRENT_TIMESTAMP
-    qtdneg integer NOT NULL DEFAULT 0,  
+    dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, -- ON UPDATE CURRENT_TIMESTAMP
+    qtdneg integer NOT NULL DEFAULT 0
 );
 INSERT INTO produto (descrprod) VALUES ('PRANCHA PRO 480');
 INSERT INTO produto (descrprod) VALUES ('SECADOR MILLANO');
@@ -34,6 +35,7 @@ INSERT INTO produto (descrprod) VALUES ('MAQ DE CORTE');
 INSERT INTO produto (descrprod) VALUES ('ESC DESENB BEAUTY');
 
 ---SELLOUT
+--DROP TABLE sellout
 CREATE TABLE sellout (
   idpromoter integer REFERENCES promoter (id),
   idproduto integer REFERENCES produto (id),
