@@ -11,8 +11,15 @@ const config = {
 
 // Função para realizar a consulta e retornar os dados
 module.exports =
-async function consultarDados(table) {
-  console.log('table', table)
+async function consultarDados(QueryTable, isQuery) {
+
+  console.log('QueryTable',isQuery,  QueryTable)
+  let query
+  if(isQuery){
+    query = `${QueryTable}`;
+  } else {
+    query = `SELECT * FROM ${QueryTable}`
+  }
   // Crie uma instância do cliente PostgreSQL
   const client = new Client(config);
 
@@ -21,7 +28,7 @@ async function consultarDados(table) {
     await client.connect();
 
     // Consulta SQL para selecionar os dados da tabela
-    const query = `SELECT * FROM ${table}`;
+    
 
     // Executa a consulta
     const resultado = await client.query(query);
