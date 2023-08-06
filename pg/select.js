@@ -13,7 +13,7 @@ const config = {
 module.exports =
 async function consultarDados(QueryTable, isQuery) {
 
-  console.log('QueryTable',isQuery,  QueryTable)
+  //console.log('QueryTable',isQuery,  QueryTable)
   let query
   if(isQuery){
     query = `${QueryTable}`;

@@ -4,7 +4,7 @@ const { Client } = require('pg');
 const config = {
   user: 'postgres',
   host: 'localhost',
-  database: 'sellout',
+  database: 'teste',
   password: 'postgres',
   port: 5432, // Porta padrão do PostgreSQL
 };
@@ -14,7 +14,7 @@ const config = {
 
 // Função para gravar dados no banco de dados
 module.exports = 
-async function gravarDados(qry) {
+async function gravarDados(dados) {
     // Crie uma instância do cliente PostgreSQL
     const client = new Client(config);
   
@@ -24,17 +24,16 @@ async function gravarDados(qry) {
   
   
       // Consulta SQL para inserir os dados na tabela
-      //const query = 'INSERT INTO teste01 (texto, dtlog)  VALUES ($1, CURRENT_DATE) RETURNING *';
-      const query = qry
+      const query = 'INSERT INTO teste01 (texto, dtlog)  VALUES ($1, CURRENT_DATE) RETURNING *';
+  
       // Executa a consulta passando os dados como parâmetros
-      const resultado = await client.query(query, []);
+      const resultado = await client.query(query, [dados]);
   
       // Exibe o resultado
-      console.log('Dados gravados com sucesso:', resultado.rowCount);
-      return await resultado.rowCount
+      console.log('Dados gravados com sucesso:', resultado.rows[0]);
+      return await resultado.rows[0]
     } catch (err) {
-      console.log(err.detail);
-      return err.detail
+      console.error('Erro ao gravar dados:', err);
     } finally {
       // Fecha a conexão com o banco de dados
       await client.end();

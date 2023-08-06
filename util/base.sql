@@ -5,10 +5,11 @@ CREATE DATABASE sellout;
 CREATE TABLE promoter (
   id serial PRIMARY KEY,
   nome varchar(50) NOT NULL UNIQUE,
+  senha varchar(50), 
   dtcad timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP -- ON UPDATE CURRENT_TIMESTAMP
 );
-
+--ALTER TABLE promoter ADD COLUMN senha VARCHAR(30);
 INSERT INTO promoter (nome) VALUES ('JOANA');
 
 ---Lojas
@@ -43,7 +44,7 @@ INSERT INTO produto (descrprod) VALUES ('SECADOR VORTEX 2400W');
 
 
 ---SELLOUT
---DROP TABLE sellout
+--DROP TABLE sellout;
 CREATE TABLE sellout (
   id serial PRIMARY KEY,
   idpromoter integer REFERENCES promoter (id),
@@ -55,6 +56,7 @@ CREATE TABLE sellout (
 
 INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,2,'2023-02-08');
 INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,3,'2023-07-22');
+INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,3,'2023-07-25');
 
 --SELLOUTITEM
 CREATE TABLE selloutitem (
@@ -66,6 +68,8 @@ CREATE TABLE selloutitem (
 );
 
 INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(1,3,8);
+INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(2,5,2);
+INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(2,2,31);
 
 
 --SELECT INICIO SELLOUT
@@ -85,3 +89,36 @@ SELECT
   ,COALESCE(sell.qtdneg,0) as qtdneg
 FROM produto AS pro LEFT JOIN selloutitem  AS sell ON (sell.idproduto=pro.id)
 WHERE  sell.idsellout IS NULL OR sell.idsellout=1;
+
+
+
+
+SELECT 
+  pro.id as idproduto
+  ,pro.descrprod as descrprod
+  ,COALESCE((SELECT qtdneg FROM selloutitem WHERE idproduto=pro.id AND idsellout=1),0) as qtdneg
+FROM produto AS pro ;
+
+
+--INSERT OR UPDATE 
+INSERT INTO selloutitem (idsellout, idproduto, qtdneg)
+VALUES (1,1,8)
+ON CONFLICT (idsellout, idproduto)
+DO UPDATE SET qtdneg = 8;
+
+[
+ {id:1, nome:'PRANCHA', qtdneg:0},
+ { id:2, nome:'SECADOR', qtdneg:0},
+ {id:3, nome:'MAQ CORTE', qtdneg:0},
+ {id:4, nome:'ESC 001.01', qtdneg:0},
+ {id:5, nome:'ESC 002.01', qtdneg:0},
+ {id:6, nome:'MODELADOR CURLING', qtdneg:0},
+ {id:7, nome:'PRANCHA SLIM', qtdneg:0}, 
+]
+ {id:1, nome:'PRANCHA', qtdneg:0},
+ { id:2, nome:'SECADOR', qtdneg:0},
+ {id:3, nome:'MAQ CORTE', qtdneg:0},
+ {id:4, nome:'ESC 001.01', qtdneg:0},
+ {id:5, nome:'ESC 002.01', qtdneg:0},
+ {id:6, nome:'MODELADOR CURLING', qtdneg:0},
+ {id:7, nome:'PRANCHA SLIM', qtdneg:0},
