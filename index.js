@@ -137,10 +137,12 @@ function auth(req, res, next){
 
 app.post("/auth",async (req, res) => {
 
-    var {usuario, senha} = req.body;
+    var {usuario, senha} = req.body
+    usuario = usuario.toUpperCase();
+    
     console.log('auth', usuario, senha)
     
-    let query = `SELECT nome, senha FROM promoter WHERE nome='${usuario}'`
+    let query = `SELECT id, nome, senha FROM promoter WHERE UPPER(nome)=UPPER('${usuario}')`
 
     let DB = {}
     let dados = await select(query, true)
@@ -152,13 +154,14 @@ app.post("/auth",async (req, res) => {
         var user = DB.users.find(u => u.nome == usuario);
         if(user != undefined){
             if(user.senha == senha){
-                jwt.sign({id: user.id, usuario: user.usuario},JWTSecret,{expiresIn:'48h'},(err, token) => {
+                jwt.sign({id:user.id, usuario: user.nome},JWTSecret,{expiresIn:'48h'},(err, token) => {
                     if(err){
                         res.status(400);
                         res.json({err:"Falha interna"});
                     }else{
                         res.status(200);
-                        res.json({token: token});
+                        //console.log('Token:', {token: token, id:user.id, usuario: user.nome})
+                        res.json({token: token, id:user.id, usuario: user.nome});
                     }
                 })
             }else{

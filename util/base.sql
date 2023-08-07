@@ -10,7 +10,8 @@ CREATE TABLE promoter (
   dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP -- ON UPDATE CURRENT_TIMESTAMP
 );
 --ALTER TABLE promoter ADD COLUMN senha VARCHAR(30);
-INSERT INTO promoter (nome) VALUES ('JOANA');
+INSERT INTO promoter (nome,senha) VALUES ('HUGO', '123');
+INSERT INTO promoter (nome,senha) VALUES ('VAGNER', '123');
 
 ---Lojas
 --DROP TABLE loja
