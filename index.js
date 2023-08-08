@@ -101,8 +101,8 @@ app.post("/insertSellout", async (req, res) => {
 app.post("/insertSelloutItem", async (req, res) => {
     var ins = req.body;
     console.log(ins)
-    let query = `INSERT INTO selloutitem (idsellout, idproduto,  qtdneg)
-                VALUES ($1, $2, $3) ON CONFLICT (idsellout, idproduto)
+    let query = `INSERT INTO selloutitem (idproduto, idsellout,qtdneg)
+                VALUES ($1, $2, $3) ON CONFLICT (idproduto, idsellout)
                 DO UPDATE SET qtdneg = $3;`
     await insertArray(query, ins)
 })
@@ -188,6 +188,22 @@ app.post("/promoter", async (req, res) => {
     let query = `INSERT INTO promoter (id, nome, senha,idger) VALUES (${ins.id},UPPER('${ins.nome}'), '${ins.senha}', ${ins.idger})
                 ON CONFLICT(id) DO UPDATE SET nome=UPPER('${ins.nome}'), senha='${ins.senha}',idger=${ins.idger};`
     await insert(query).then(_=>{ 
+        res.sendStatus(200)
+    }) //Falta tratar erros do BD
+        .catch(err => {
+            console.log('erro insert Promoter', err)
+            res.send('err', err)
+        })
+})
+
+
+//Insere Promoter
+app.post("/produto", async (req, res) => {
+    var ins = req.body;
+    console.log(typeof ins)
+    let query = `INSERT INTO produto (descrprod, grupo, id) VALUES (UPPER($1), UPPER($2), $3)
+                ON CONFLICT(id) DO UPDATE SET descrprod=UPPER($1), grupo=UPPER($2);`
+    await insertArray(query, ins).then(_=>{ 
         res.sendStatus(200)
     }) //Falta tratar erros do BD
         .catch(err => {

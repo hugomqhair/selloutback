@@ -26,14 +26,24 @@ async function insertRecords(query, records) {
     
     let resp
     // Executa o comando SQL para cada registro do array
+    // console.log(records)
+    // console.log(query)
+
     for (const record of records) {
-      resp = await client.query(insertQuery, [
-        record.idsellout,
-        record.idproduto,
-        record.qtdneg,
-    ]);
-        resultado += resp.rowCount
+      console.log(Object.values(record))
+      resp = await client.query(insertQuery, Object.values(record));
+      resultado += resp.rowCount
     }
+
+    // record.idsellout,
+    // record.idproduto,
+    // record.qtdneg,
+
+    // record.id,
+    // record.descr,
+    // record.grupo,
+
+
 
 
     // Finaliza a transação com commit

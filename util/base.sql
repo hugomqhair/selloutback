@@ -33,10 +33,12 @@ DROP TABLE produto;
 CREATE TABLE produto (
     id serial PRIMARY KEY,
     descrprod varchar(50) NOT NULL,
+    grupo VARCHAR(20),
     dtcad timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, -- ON UPDATE CURRENT_TIMESTAMP
     qtdneg integer NOT NULL DEFAULT 0
 );
+--ALTER TABLE produto ADD COLUMN grupo VARCHAR(20);
 INSERT INTO produto (descrprod) VALUES ('PRANCHA PRO 480');
 INSERT INTO produto (descrprod) VALUES ('SECADOR MILLANO');
 INSERT INTO produto (descrprod) VALUES ('MAQ DE CORTE');
