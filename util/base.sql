@@ -32,7 +32,7 @@ INSERT INTO loja (nome) VALUES ('LOJAS REDE');
 DROP TABLE produto;
 CREATE TABLE produto (
     id serial PRIMARY KEY,
-    descrprod varchar(50) NOT NULL,
+    descrprod varchar(100) NOT NULL,
     grupo VARCHAR(20),
     dtcad timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, -- ON UPDATE CURRENT_TIMESTAMP
@@ -64,6 +64,7 @@ INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,3,'2023-07-22');
 INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,3,'2023-07-25');
 
 --SELLOUTITEM
+--DROP TABLE SELLOUTITEM;
 CREATE TABLE selloutitem (
   idsellout integer REFERENCES sellout (id),
   idproduto integer REFERENCES produto (id),
