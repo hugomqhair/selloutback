@@ -33,8 +33,11 @@ async function gravarDados(qry) {
       console.log('Dados gravados com sucesso:', resultado.rowCount);
       return await resultado.rowCount
     } catch (err) {
-      console.log(err.detail);
-      return err.detail
+        if(err.detail==' undefined'){
+          return await 'Erro no Banco de Dados'
+        } else {
+          return await err.detail
+        }
     } finally {
       // Fecha a conexão com o banco de dados
       await client.end();

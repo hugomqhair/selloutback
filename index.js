@@ -179,6 +179,34 @@ app.post("/auth",async (req, res) => {
     }
 });
 
+//Insere Promoter
+app.post("/promoter", async (req, res) => {
+    var ins = req.body;
+    console.log(ins)
+    let query = `INSERT INTO promoter (id, nome, senha,idger) VALUES (${ins.id},UPPER('${ins.nome}'), '${ins.senha}', ${ins.idger})
+                ON CONFLICT(id) DO UPDATE SET nome=UPPER('${ins.nome}'), senha='${ins.senha}',idger=${ins.idger};`
+    await insert(query).then(_=>{ 
+        res.sendStatus(200)
+    }) //Falta tratar erros do BD
+        .catch(err => {
+            console.log('erro insert Promoter', err)
+            res.send('err', err)
+        })
+})
+
+
+//apenas testes
+app.post("/produto", async (req, res) => {
+    var ins = req.body;
+    console.log(ins)
+    if(ins){
+        res.status(200)
+        res.send({info: "Legal Chegou"})
+    } else {
+        res.status(400)
+        res.send({info: "Eroo"})
+    }
+})
 
 app.listen(3000, () => {
     console.log("API RODANDO! (3000)");
