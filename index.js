@@ -179,6 +179,8 @@ app.post("/auth",async (req, res) => {
     }
 });
 
+
+
 //Insere Promoter
 app.post("/promoter", async (req, res) => {
     var ins = req.body;
