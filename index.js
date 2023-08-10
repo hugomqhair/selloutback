@@ -100,11 +100,16 @@ app.post("/insertSellout", async (req, res) => {
 
 app.post("/insertSelloutItem", async (req, res) => {
     var ins = req.body;
-    console.log(ins)
+    ins = ins.map(body => ({idproduto:body.idproduto, idsellout:body.idsellout, qtdneg:body.qtdneg}))
+    console.log('body', ins)
+    //let {idproduto, idsellout, qtdneg} = Object.keys(ins[0])
     let query = `INSERT INTO selloutitem (idproduto, idsellout,qtdneg)
                 VALUES ($1, $2, $3) ON CONFLICT (idproduto, idsellout)
                 DO UPDATE SET qtdneg = $3;`
     await insertArray(query, ins)
+    .then(_ => {
+        res.sendStatus(200)
+    }).catch(err => res.sendStatus(500))
 })
 
 

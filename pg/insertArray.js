@@ -30,7 +30,7 @@ async function insertRecords(query, records) {
     // console.log(query)
 
     for (const record of records) {
-      console.log(Object.values(record))
+      console.log(query, Object.values(record))
       resp = await client.query(insertQuery, Object.values(record));
       resultado += resp.rowCount
     }
