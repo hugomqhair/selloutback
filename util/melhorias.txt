@@ -1,0 +1,5 @@
+- Somar total de vendas por dia
+- Criar alerta de falta de estoque
+    Ao informar falta item deve ir para o fim da lista
+- Criar objetivo do promoter
+- Permitir contagem de estoque

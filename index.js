@@ -44,7 +44,8 @@ app.get("/obterSellouts", async (req, res) => {
                     ,sell.dtmov
                     ,TO_CHAR(dtmov,'DD/MM/YYYY') AS fmt_dtmov
                     ,loja.nome as loja
-                    ,pro.nome as vend 
+                    ,pro.nome as vend
+                    ,sell.qtdneg 
                 FROM sellout as sell 
                 LEFT JOIN promoter pro ON (pro.id = sell.idpromoter) 
                 LEFT JOIN loja ON (sell.idloja = loja.id)

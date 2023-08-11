@@ -55,10 +55,11 @@ CREATE TABLE sellout (
   idpromoter integer REFERENCES promoter (id),
   idloja integer REFERENCES loja (id),
   dtmov date NOT NULL,
+  qtdneg INTEGER,
   dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE (idpromoter, idloja, dtmov)
 );
-
+--ALTER TABLE SELLOUT ADD COLUMN QTDNEG INTEGER;
 INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,2,'2023-02-08');
 INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,3,'2023-07-22');
 INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,3,'2023-07-25');
@@ -76,6 +77,27 @@ CREATE TABLE selloutitem (
 INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(1,3,8);
 INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(2,5,2);
 INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(2,2,31);
+
+--- TRIGGER ---
+CREATE OR REPLACE FUNCTION stpr_atualiza_qdtneg()
+RETURNS TRIGGER
+LANGUAGE 'plpgsql' VOLATILE COST 100
+AS $BODY$
+BEGIN
+	UPDATE sellout SET qtdneg=(SELECT sum(qtdneg) FROM selloutitem WHERE idsellout=NEW.idsellout) where id=new.idsellout;
+	RETURN NULL;
+END;
+$BODY$;
+
+--DROP TRIGGER trg_atualiza_qdtneg ON SELLOUTITEM;
+CREATE TRIGGER trg_atualiza_qdtneg
+AFTER INSERT OR UPDATE ON selloutitem
+FOR EACH ROW
+EXECUTE FUNCTION stpr_atualiza_qdtneg();
+
+
+
+
 
 
 --SELECT INICIO SELLOUT
@@ -128,3 +150,25 @@ DO UPDATE SET qtdneg = 8;
  {id:5, nome:'ESC 002.01', qtdneg:0},
  {id:6, nome:'MODELADOR CURLING', qtdneg:0},
  {id:7, nome:'PRANCHA SLIM', qtdneg:0},
+-- Cria uma função que será executada pelo trigger
+
+CREATE OR REPLACE FUNCTION somaDia()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Coloque aqui as ações que você deseja executar quando o gatilho for acionado
+    -- Por exemplo, você pode realizar ações antes ou depois de uma operação na tabela
+    -- NEW é uma referência ao novo registro (caso de inserção/atualização)
+    -- OLD é uma referência ao registro original (caso de atualização/exclusão)
+    
+    -- Exemplo: Atualizar um campo de data de modificação
+    NEW.data_modificacao := NOW();
+    
+    RETURN NEW; -- Deve retornar o registro modificado ou novo
+END;
+$$ LANGUAGE plpgsql;
+
+-- Cria o gatilho que chama a função quando ocorre um evento na tabela
+CREATE TRIGGER exemplo_trigger
+BEFORE INSERT OR UPDATE ON nome_da_tabela
+FOR EACH ROW
+EXECUTE FUNCTION exemplo_trigger_function();
