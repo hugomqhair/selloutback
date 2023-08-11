@@ -96,6 +96,19 @@ FOR EACH ROW
 EXECUTE FUNCTION stpr_atualiza_qdtneg();
 
 
+--FUNCTION
+CREATE OR REPLACE FUNCTION fnc_limpa_descrprod(idproduto INTEGER)
+RETURNS VARCHAR
+LANGUAGE 'plpgsql' VOLATILE COST 100
+AS $BODY$
+DECLARE
+	DESCR VARCHAR(100);
+BEGIN
+	SELECT TRIM(REPLACE(descrprod,grupo,'')) INTO descr FROM produto WHERE id=idproduto;
+	RETURN descr;
+END;
+$BODY$;
+
 
 
 

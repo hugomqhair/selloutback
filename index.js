@@ -60,9 +60,11 @@ app.get("/loadSelloutitem", async (req, res) => {
     res.statusCode = 200;
     let query = `SELECT 
                     pro.id as idproduto
-                    ,pro.descrprod as descrprod
+                    ,fnc_limpa_descrprod(pro.id) as descrprod
                     ,COALESCE((SELECT qtdneg FROM selloutitem WHERE idproduto=pro.id AND idsellout=${idsellout}),0) as qtdneg
-                FROM produto AS pro ;`
+                    ,pro.grupo
+                    ,DENSE_RANK() OVER (ORDER BY grupo) AS idgrupo
+                FROM produto AS pro  ORDER BY grupo, descrprod;`
     let dados = await select(query, true)
     res.json(dados);
 });
