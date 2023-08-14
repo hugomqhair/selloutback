@@ -207,7 +207,7 @@ app.post("/promoter", async (req, res) => {
 //Insere PromoterLoja
 app.post("/loja", async (req, res) => {
     var ins = req.body;
-    //ins = ins.map(body => ({idproduto:body.idproduto, idsellout:body.idsellout, qtdneg:body.qtdneg}))
+    ins = ins.map(arr => ({id:arr.id, idpromoter:arr.idpromoter, nome:arr.nome}))
     console.log(typeof ins, ins)
     let query = `INSERT INTO loja (id, idpromoter, nome ) VALUES ($1, $2, UPPER($3))
                 ON CONFLICT(id, idpromoter) DO UPDATE SET nome=UPPER($3)`

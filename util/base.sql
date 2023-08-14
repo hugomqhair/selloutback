@@ -22,7 +22,8 @@ CREATE TABLE loja (
     nome varchar(50) NOT NULL UNIQUE,
     idpromoter INTEGER REFERENCES promoter (id),
     dtcad timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP -- ON UPDATE CURRENT_TIMESTAMP
+    dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, -- ON UPDATE CURRENT_TIMESTAMP
+    UNIQUE (id, idpromoter)
 );
 INSERT INTO loja (nome, idpromoter) VALUES ('SUMIRE',1);
 INSERT INTO loja (nome, idpromoter) VALUES ('GOYA',2);
