@@ -18,17 +18,17 @@ INSERT INTO promoter (nome,senha) VALUES ('VAGNER', '123');
 ---Lojas
 --DROP TABLE loja
 CREATE TABLE loja (
-    id serial PRIMARY KEY,
-    nome varchar(50) NOT NULL UNIQUE,
+    id INTEGER NOT NULL,
+    nome varchar(50) NOT NULL,
     idpromoter INTEGER REFERENCES promoter (id),
     dtcad timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, -- ON UPDATE CURRENT_TIMESTAMP
-    UNIQUE (id, idpromoter)
+    PRIMARY KEY (id, idpromoter)
 );
-INSERT INTO loja (nome, idpromoter) VALUES ('SUMIRE',1);
-INSERT INTO loja (nome, idpromoter) VALUES ('GOYA',2);
-INSERT INTO loja (nome, idpromoter) VALUES ('IKESAKI',1);
-INSERT INTO loja (nome, idpromoter) VALUES ('LOJAS REDE',4);
+INSERT INTO loja (id, nome, idpromoter) VALUES (1,'SUMIRE',1);
+INSERT INTO loja (id, nome, idpromoter) VALUES (2,'GOYA',2);
+INSERT INTO loja (id, nome, idpromoter) VALUES (3,'IKESAKI',1);
+INSERT INTO loja (id, nome, idpromoter) VALUES (4,'LOJAS REDE',4);
 
 --Produtos
 DROP TABLE produto;
@@ -54,8 +54,8 @@ INSERT INTO produto (descrprod) VALUES ('SECADOR VORTEX 2400W');
 --DROP TABLE sellout;
 CREATE TABLE sellout (
   id serial PRIMARY KEY,
-  idpromoter integer REFERENCES promoter (id),
-  idloja integer REFERENCES loja (id),
+  idpromoter integer REFERENCES promoter (id) NOT NULL,
+  idloja integer REFERENCES loja (id) NOT NULL,
   dtmov date NOT NULL,
   qtdneg INTEGER,
   dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

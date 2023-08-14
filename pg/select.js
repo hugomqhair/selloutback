@@ -34,7 +34,7 @@ async function consultarDados(QueryTable, isQuery) {
     const resultado = await client.query(query);
 
     // Exibe os dados retornados
-    console.log('Dados retornados da consulta:');
+    //console.log('Dados retornados da consulta:');
     // resultado.rows.forEach((row, index) => {
     //   console.log(`Registro ${index + 1}:`, row);
     // });

@@ -27,10 +27,20 @@ app.get("/select", auth, async (req, res) => {
 });
 
 app.get("/consulta", async (req, res) => {
+    //console.log(req.query)
     //Esta consulta usa dados da query para buscar na tabela, exemplo http://localhost:3000/consulta?operacao=produto
     let consulta = req.query
+    let query 
+    let isQuery
+    if(consulta.operacao == 'loja'){
+        query = `SELECT id, nome FROM loja WHERE idpromoter=${req.query.user} ORDER BY nome`
+        isQuery = true
+    }else {
+        query = consulta.operacao 
+        isQuery = false
+    }
+    let dados = await select(query, isQuery)
     res.statusCode = 200;
-    let dados = await select(consulta.operacao)
     res.json(dados);
 });
 
@@ -49,7 +59,7 @@ app.get("/obterSellouts", async (req, res) => {
                 FROM sellout as sell 
                 LEFT JOIN promoter pro ON (pro.id = sell.idpromoter) 
                 LEFT JOIN loja ON (sell.idloja = loja.id)
-                WHERE pro.id=${idpromoter};`
+                WHERE pro.id=${idpromoter} LIMIT 7;`
     let dados = await select(query, true)
     res.json(dados);
 });
@@ -91,13 +101,15 @@ app.post("/insertSellout", async (req, res) => {
     var ins = req.body;
     console.log(ins)
     let query = `INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (${ins.idpromoter}, ${ins.idloja}, '${ins.dtmov}');`
-    await insert(query).then(_=>{ 
-        res.sendStatus(200)
-    }) //Falta tratar erros do BD
-        .catch(err => {
-            res.send('err')
-            console.log('erro')
-        })
+    let dados = await insert(query)
+    //console.log(dados)
+    if(dados===1){
+        res.status(200).send('Dia cadastrado com sucesso!')
+    } else {
+        res.status(401).send(dados)
+    }
+    // res.send('Testando!!!')
+    // res.sendStatus('Testando', 200)
 })
 
 
