@@ -20,13 +20,14 @@ INSERT INTO promoter (nome,senha) VALUES ('VAGNER', '123');
 CREATE TABLE loja (
     id serial PRIMARY KEY,
     nome varchar(50) NOT NULL UNIQUE,
+    idpromoter INTEGER REFERENCES promoter (id),
     dtcad timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP -- ON UPDATE CURRENT_TIMESTAMP
 );
-INSERT INTO loja (nome) VALUES ('SUMIRE');
-INSERT INTO loja (nome) VALUES ('GOYA');
-INSERT INTO loja (nome) VALUES ('IKESAKI');
-INSERT INTO loja (nome) VALUES ('LOJAS REDE');
+INSERT INTO loja (nome, idpromoter) VALUES ('SUMIRE',1);
+INSERT INTO loja (nome, idpromoter) VALUES ('GOYA',2);
+INSERT INTO loja (nome, idpromoter) VALUES ('IKESAKI',1);
+INSERT INTO loja (nome, idpromoter) VALUES ('LOJAS REDE',4);
 
 --Produtos
 DROP TABLE produto;
