@@ -49,18 +49,30 @@ INSERT INTO produto (descrprod) VALUES ('ESC ROSA BEAUTY');
 INSERT INTO produto (descrprod) VALUES ('PRANCHA 480 SLIM');
 INSERT INTO produto (descrprod) VALUES ('SECADOR VORTEX 2400W');
 
+CREATE TABLE produtolojaestoque (
+  idproduto INTEGER NOT NULL REFERENCES produto (id),
+  idloja INTEGER NOT NULL REFERENCES loja (id),
+  idpromoter INTEGER NOT NULL REFERENCES loja (idpromoter),
+  estoque INTEGER NOT NULL,
+  dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+)
+
 
 ---SELLOUT
 --DROP TABLE sellout;
 CREATE TABLE sellout (
   id serial PRIMARY KEY,
-  idpromoter integer REFERENCES promoter (id) NOT NULL,
-  idloja integer REFERENCES loja (id) NOT NULL,
+  idpromoter integer NOT NULL, 
+  idloja integer NOT NULL, 
   dtmov date NOT NULL,
   qtdneg INTEGER,
   dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE (idpromoter, idloja, dtmov)
+  FOREIGN KEY (idloja, idpromoter) REFERENCES loja (id, idpromoter),
+  UNIQUE (idloja, idpromoter, dtmov)
 );
+  --UNIQUE (idpromoter, idloja, dtmov)
+
+  
 --ALTER TABLE SELLOUT ADD COLUMN QTDNEG INTEGER;
 INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,2,'2023-02-08');
 INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,3,'2023-07-22');
