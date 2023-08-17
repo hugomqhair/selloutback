@@ -114,9 +114,10 @@ app.post("/insertSellout", async (req, res) => {
 
 
 app.post("/insertSelloutItem", async (req, res) => {
+    console.log(req.body)
     var ins = req.body;
-    ins = ins.map(body => ({idproduto:body.idproduto, idsellout:body.idsellout, qtdneg:body.qtdneg}))
-    console.log('body', ins)
+    ins = ins[0].map(body => ({idproduto:body.idproduto, idsellout:body.idsellout, qtdneg:body.qtdneg}))
+    //console.log('body', ins)
     //let {idproduto, idsellout, qtdneg} = Object.keys(ins[0])
     let query = `INSERT INTO selloutitem (idproduto, idsellout,qtdneg)
                 VALUES ($1, $2, $3) ON CONFLICT (idproduto, idsellout)

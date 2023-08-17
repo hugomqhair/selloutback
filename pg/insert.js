@@ -30,7 +30,7 @@ async function gravarDados(qry) {
       const resultado = await client.query(query, []);
   
       // Exibe o resultado
-      console.log('Dados gravados com sucesso:', resultado.rowCount);
+      //console.log('Dados gravados com sucesso:', resultado.rowCount);
       return await resultado.rowCount
     } catch (err) {
         if(err.detail==' undefined'){

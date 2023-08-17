@@ -28,7 +28,7 @@ CREATE TABLE loja (
 INSERT INTO loja (id, nome, idpromoter) VALUES (1,'SUMIRE',1);
 INSERT INTO loja (id, nome, idpromoter) VALUES (2,'GOYA',2);
 INSERT INTO loja (id, nome, idpromoter) VALUES (3,'IKESAKI',1);
-INSERT INTO loja (id, nome, idpromoter) VALUES (4,'LOJAS REDE',4);
+INSERT INTO loja (id, nome, idpromoter) VALUES (4,'LOJAS REDE',1);
 
 --Produtos
 DROP TABLE produto;
@@ -41,13 +41,13 @@ CREATE TABLE produto (
     qtdneg integer NOT NULL DEFAULT 0
 );
 --ALTER TABLE produto ADD COLUMN grupo VARCHAR(20);
-INSERT INTO produto (descrprod) VALUES ('PRANCHA PRO 480');
-INSERT INTO produto (descrprod) VALUES ('SECADOR MILLANO');
-INSERT INTO produto (descrprod) VALUES ('MAQ DE CORTE');
-INSERT INTO produto (descrprod) VALUES ('ESC DES BEAUTY');
-INSERT INTO produto (descrprod) VALUES ('ESC ROSA BEAUTY');
-INSERT INTO produto (descrprod) VALUES ('PRANCHA 480 SLIM');
-INSERT INTO produto (descrprod) VALUES ('SECADOR VORTEX 2400W');
+INSERT INTO produto (descrprod,grupo) VALUES ('PRANCHA PRO 480','PRANCHA');
+INSERT INTO produto (descrprod,grupo) VALUES ('SECADOR MILLANO', 'SECADOR');
+INSERT INTO produto (descrprod,grupo) VALUES ('MAQ DE CORTE', 'MAQUINA DE CORTE');
+INSERT INTO produto (descrprod,grupo) VALUES ('ESCOVAS DES BEAUTY', 'ESCOVAS');
+INSERT INTO produto (descrprod,grupo) VALUES ('ESC ROSA BEAUTY','ESCOVAS');
+INSERT INTO produto (descrprod,grupo) VALUES ('PRANCHA 480 SLIM', 'PRANCHA');
+INSERT INTO produto (descrprod,grupo) VALUES ('SECADOR VORTEX TURBO MAX 2400W', 'SECADOR');
 
 CREATE TABLE produtolojaestoque (
   idproduto INTEGER NOT NULL REFERENCES produto (id),
@@ -74,9 +74,9 @@ CREATE TABLE sellout (
 
   
 --ALTER TABLE SELLOUT ADD COLUMN QTDNEG INTEGER;
-INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,2,'2023-02-08');
-INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,3,'2023-07-22');
-INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,3,'2023-07-25');
+-- INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,2,'2023-02-08');
+-- INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,3,'2023-07-22');
+-- INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (1,3,'2023-07-25');
 
 --SELLOUTITEM
 --DROP TABLE SELLOUTITEM;
@@ -88,9 +88,9 @@ CREATE TABLE selloutitem (
   PRIMARY KEY (idsellout, idproduto)
 );
 
-INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(1,3,8);
-INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(2,5,2);
-INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(2,2,31);
+-- INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(1,3,8);
+-- INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(2,5,2);
+-- INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(2,2,31);
 
 --- TRIGGER ---
 CREATE OR REPLACE FUNCTION stpr_atualiza_qdtneg()
