@@ -23,22 +23,22 @@ CREATE TABLE loja (
     idpromoter INTEGER REFERENCES promoter (id),
     dtcad timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, -- ON UPDATE CURRENT_TIMESTAMP
-    PRIMARY KEY (id, idpromoter)
+    PRIMARY KEY (id)
 );
 INSERT INTO loja (id, nome, idpromoter) VALUES (1,'SUMIRE',1);
 INSERT INTO loja (id, nome, idpromoter) VALUES (2,'GOYA',2);
 INSERT INTO loja (id, nome, idpromoter) VALUES (3,'IKESAKI',1);
 INSERT INTO loja (id, nome, idpromoter) VALUES (4,'LOJAS REDE',1);
+INSERT INTO loja (id, nome, idpromoter) VALUES (5,'LOJAS DANNY COSMETICOS - BARRA FUNDA',2);
 
 --Produtos
-DROP TABLE produto;
+--DROP TABLE produto;
 CREATE TABLE produto (
     id serial PRIMARY KEY,
     descrprod varchar(100) NOT NULL,
     grupo VARCHAR(20),
     dtcad timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, -- ON UPDATE CURRENT_TIMESTAMP
-    qtdneg integer NOT NULL DEFAULT 0
+    dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP -- ON UPDATE CURRENT_TIMESTAMP
 );
 --ALTER TABLE produto ADD COLUMN grupo VARCHAR(20);
 INSERT INTO produto (descrprod,grupo) VALUES ('PRANCHA PRO 480','PRANCHA');
@@ -48,14 +48,25 @@ INSERT INTO produto (descrprod,grupo) VALUES ('ESCOVAS DES BEAUTY', 'ESCOVAS');
 INSERT INTO produto (descrprod,grupo) VALUES ('ESC ROSA BEAUTY','ESCOVAS');
 INSERT INTO produto (descrprod,grupo) VALUES ('PRANCHA 480 SLIM', 'PRANCHA');
 INSERT INTO produto (descrprod,grupo) VALUES ('SECADOR VORTEX TURBO MAX 2400W', 'SECADOR');
+INSERT INTO produto (descrprod,grupo) VALUES ('SECADOR VORTEX TURBO MAX BLACK 2400W', 'SECADOR');
+INSERT INTO produto (descrprod,grupo) VALUES ('ESC AMARELA ROSA BEAUTY','ESCOVAS');
+INSERT INTO produto (descrprod,grupo) VALUES ('ESC VERMELHA BEAUTY','ESCOVAS');
+INSERT INTO produto (descrprod,grupo) VALUES ('ESC BLACK BEAUTY','ESCOVAS');
+INSERT INTO produto (descrprod,grupo) VALUES ('MAQUINA DE CORTE FORCER BARBER', 'MAQUINA DE CORTE');
+INSERT INTO produto (descrprod,grupo) VALUES ('MAQUINA DE CORTE FORCER FADE', 'MAQUINA DE CORTE');
+INSERT INTO produto (descrprod,grupo) VALUES ('MAQUINA DE CORTE FORCER METAL', 'MAQUINA DE CORTE');
+INSERT INTO produto (descrprod,grupo) VALUES ('SECADOR VORTEX TURBO MAX ROSA 2400W LINHA ESPECIAL', 'SECADOR');
 
+DROP TABLE produtolojaestoque;
 CREATE TABLE produtolojaestoque (
-  idproduto INTEGER NOT NULL REFERENCES produto (id),
-  idloja INTEGER NOT NULL REFERENCES loja (id),
-  idpromoter INTEGER NOT NULL REFERENCES loja (idpromoter),
-  estoque INTEGER NOT NULL,
-  dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-)
+    idproduto INTEGER NOT NULL REFERENCES produto (id),
+    idloja INTEGER NOT NULL REFERENCES loja (id),
+    estoque INTEGER,
+    dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    semcadastro boolean DEFAULT FALSE,
+    semestoque boolean DEFAULT FALSE,
+    PRIMARY KEY (idloja, idproduto)
+  );
 
 
 ---SELLOUT
@@ -67,9 +78,21 @@ CREATE TABLE sellout (
   dtmov date NOT NULL,
   qtdneg INTEGER,
   dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (idloja, idpromoter) REFERENCES loja (id, idpromoter),
+  FOREIGN KEY (idloja) REFERENCES loja (id),
+  FOREIGN KEY (idpromoter) REFERENCES promoter (id),
   UNIQUE (idloja, idpromoter, dtmov)
 );
+--Versão OLD
+-- CREATE TABLE sellout (
+--   id serial PRIMARY KEY,
+--   idpromoter integer NOT NULL, 
+--   idloja integer NOT NULL, 
+--   dtmov date NOT NULL,
+--   qtdneg INTEGER,
+--   dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--   FOREIGN KEY (idloja, idpromoter) REFERENCES loja (id, idpromoter),
+--   UNIQUE (idloja, idpromoter, dtmov)
+-- );
   --UNIQUE (idpromoter, idloja, dtmov)
 
   
@@ -85,20 +108,31 @@ CREATE TABLE selloutitem (
   idproduto integer REFERENCES produto (id),
   qtdneg integer NOT NULL,
   dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  semcadastro boolean DEFAULT FALSE,
+  semestoque boolean DEFAULT FALSE,
   PRIMARY KEY (idsellout, idproduto)
 );
 
--- INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(1,3,8);
--- INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(2,5,2);
--- INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(2,2,31);
+
+-- DROP TABLE SELLOUTITEM;
+-- DROP TABLE sellout;
+-- DROP TABLE produto;
 
 --- TRIGGER ---
 CREATE OR REPLACE FUNCTION stpr_atualiza_qdtneg()
 RETURNS TRIGGER
 LANGUAGE 'plpgsql' VOLATILE COST 100
 AS $BODY$
+DECLARE
+  p_idloja INTEGER;
 BEGIN
 	UPDATE sellout SET qtdneg=(SELECT sum(qtdneg) FROM selloutitem WHERE idsellout=NEW.idsellout) where id=new.idsellout;
+  
+  SELECT idloja INTO p_idloja FROM sellout WHERE id=NEW.idsellout;
+  INSERT INTO produtolojaestoque (idproduto, idloja, dtlog,semestoque, semcadastro) VALUES (NEW.idproduto, p_idloja, CURRENT_TIMESTAMP,NEW.semestoque, NEW.semcadastro)
+          ON CONFLICT (idproduto, idloja)
+          DO UPDATE SET dtlog=CURRENT_TIMESTAMP, semestoque=NEW.semestoque, semcadastro=NEW.semcadastro;
+
 	RETURN NULL;
 END;
 $BODY$;
@@ -199,3 +233,8 @@ CREATE TRIGGER exemplo_trigger
 BEFORE INSERT OR UPDATE ON nome_da_tabela
 FOR EACH ROW
 EXECUTE FUNCTION exemplo_trigger_function();
+
+
+-- INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(1,3,8);
+-- INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(2,5,2);
+-- INSERT INTO selloutitem (idsellout,idproduto,qtdneg) VALUES(2,2,31);

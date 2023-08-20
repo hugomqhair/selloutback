@@ -33,7 +33,7 @@ app.get("/consulta", async (req, res) => {
     let query 
     let isQuery
     if(consulta.operacao == 'loja'){
-        query = `SELECT id, nome FROM loja WHERE idpromoter=${req.query.user} ORDER BY nome`
+        query = `SELECT id, nome, idpromoter FROM loja WHERE idpromoter=${req.query.user} ORDER BY nome`
         isQuery = true
     }else {
         query = consulta.operacao 
@@ -59,7 +59,7 @@ app.get("/obterSellouts", async (req, res) => {
                 FROM sellout as sell 
                 LEFT JOIN promoter pro ON (pro.id = sell.idpromoter) 
                 LEFT JOIN loja ON (sell.idloja = loja.id)
-                WHERE pro.id=${idpromoter} LIMIT 7;`
+                WHERE pro.id=${idpromoter} ORDER BY dtmov DESC LIMIT 7;`
     let dados = await select(query, true)
     res.json(dados);
 });
@@ -73,6 +73,8 @@ app.get("/loadSelloutitem", async (req, res) => {
                     ,fnc_limpa_descrprod(pro.id) as descrprod
                     ,COALESCE((SELECT qtdneg FROM selloutitem WHERE idproduto=pro.id AND idsellout=${idsellout}),0) as qtdneg
                     ,pro.grupo
+                    ,COALESCE((SELECT semestoque FROM produtolojaestoque WHERE idproduto=pro.id AND idloja=(SELECT idloja FROM sellout WHERE id=${idsellout})),false) AS semestoque
+                    ,COALESCE((SELECT semcadastro FROM produtolojaestoque WHERE idproduto=pro.id AND idloja=(SELECT idloja FROM sellout WHERE id=${idsellout})),false) AS semcadastro
                     ,DENSE_RANK() OVER (ORDER BY grupo) AS idgrupo
                 FROM produto AS pro  ORDER BY grupo, descrprod;`
     let dados = await select(query, true)
@@ -116,12 +118,12 @@ app.post("/insertSellout", async (req, res) => {
 app.post("/insertSelloutItem", async (req, res) => {
     console.log(req.body)
     var ins = req.body;
-    ins = ins[0].map(body => ({idproduto:body.idproduto, idsellout:body.idsellout, qtdneg:body.qtdneg}))
+    ins = ins.map(body => ({idproduto:body.idproduto, idsellout:body.idsellout, qtdneg:body.qtdneg, semcadastro:body.semcadastro, semestoque:body.semestoque}))
     //console.log('body', ins)
     //let {idproduto, idsellout, qtdneg} = Object.keys(ins[0])
-    let query = `INSERT INTO selloutitem (idproduto, idsellout,qtdneg)
-                VALUES ($1, $2, $3) ON CONFLICT (idproduto, idsellout)
-                DO UPDATE SET qtdneg = $3;`
+    let query = `INSERT INTO selloutitem (idproduto, idsellout,qtdneg, semcadastro, semestoque)
+                VALUES ($1, $2, $3, $4, $5) ON CONFLICT (idproduto, idsellout)
+                DO UPDATE SET qtdneg = $3, semcadastro=$4, semestoque=$5 ;`
     await insertArray(query, ins)
     .then(_ => {
         res.sendStatus(200)
