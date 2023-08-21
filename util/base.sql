@@ -113,10 +113,10 @@ CREATE TABLE selloutitem (
   PRIMARY KEY (idsellout, idproduto)
 );
 
-
--- DROP TABLE SELLOUTITEM;
--- DROP TABLE sellout;
--- DROP TABLE produto;
+DROP TABLE SELLOUTITEM;
+DROP TABLE sellout;
+DROP TABLE produto;
+DROP TABLE loja;
 
 --- TRIGGER ---
 CREATE OR REPLACE FUNCTION stpr_atualiza_qdtneg()
