@@ -225,7 +225,7 @@ app.post("/loja", async (req, res) => {
     ins = ins.map(arr => ({id:arr.id, idpromoter:arr.idpromoter, nome:arr.nome}))
     console.log(typeof ins, ins)
     let query = `INSERT INTO loja (id, idpromoter, nome ) VALUES ($1, $2, UPPER($3))
-                ON CONFLICT(id, idpromoter) DO UPDATE SET nome=UPPER($3)`
+                ON CONFLICT(id) DO UPDATE SET idpromoter=$2, nome=UPPER($3)`
     await insertArray(query, ins).then(_=>{ 
         res.sendStatus(200)
     }) //Falta tratar erros do BD
