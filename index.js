@@ -35,6 +35,17 @@ app.get("/consulta", async (req, res) => {
     if(consulta.operacao == 'loja'){
         query = `SELECT id, nome, idpromoter FROM loja WHERE idpromoter=${req.query.user} ORDER BY nome`
         isQuery = true
+    } else if (consulta.operacao == 'resultadomensal'){
+        query = `SELECT TO_CHAR(dtmov,'MM/YYYY') AS mes
+                        ,idpromoter
+                        ,count(id) as dias
+                        ,SUM(qtdneg) AS qtdneg
+                    FROM sellout
+                    WHERE idpromoter=${req.query.user}
+                    GROUP BY TO_CHAR(dtmov,'MM/YYYY'), idpromoter
+                    ORDER BY TO_CHAR(dtmov,'MM/YYYY') DESC;
+                `
+        isQuery = true                    
     }else {
         query = consulta.operacao 
         isQuery = false
@@ -201,6 +212,8 @@ app.post("/auth",async (req, res) => {
         res.send({err: "O usuário enviado é inválido"});
     }
 });
+
+
 
 
 

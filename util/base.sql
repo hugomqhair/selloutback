@@ -179,15 +179,20 @@ SELECT
 FROM produto AS pro LEFT JOIN selloutitem  AS sell ON (sell.idproduto=pro.id)
 WHERE  sell.idsellout IS NULL OR sell.idsellout=1;
 
-
-
-
 SELECT 
   pro.id as idproduto
   ,pro.descrprod as descrprod
   ,COALESCE((SELECT qtdneg FROM selloutitem WHERE idproduto=pro.id AND idsellout=1),0) as qtdneg
 FROM produto AS pro ;
 
+--Resultado Mes
+SELECT TO_CHAR(dtmov,'MM/YYYY') AS fmt_mes
+    ,idpromoter
+    ,count(id) as dias
+    ,SUM(qtdneg) AS qtdneg
+FROM sellout 
+GROUP BY TO_CHAR(dtmov,'MM/YYYY'), idpromoter
+ORDER BY TO_CHAR(dtmov,'MM/YYYY');
 
 --INSERT OR UPDATE 
 INSERT INTO selloutitem (idsellout, idproduto, qtdneg)
