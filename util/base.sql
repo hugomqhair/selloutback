@@ -194,6 +194,16 @@ FROM sellout
 GROUP BY TO_CHAR(dtmov,'MM/YYYY'), idpromoter
 ORDER BY TO_CHAR(dtmov,'MM/YYYY');
 
+--Resultado Supervisor
+SELECT 
+  (SELECT nome FROM promoter WHERE id=idpromoter) as promoter
+  ,SUM(qtdneg) AS qtdneg
+  ,COUNT(dtmov) AS dias
+FROM sellout
+WHERE dtmov BETWEEN  date_trunc('month', current_date) AND (date_trunc('month', current_date) + interval '1 month - 1 day')
+GROUP BY idpromoter
+ORDER BY 2;
+
 --INSERT OR UPDATE 
 INSERT INTO selloutitem (idsellout, idproduto, qtdneg)
 VALUES (1,1,8)
