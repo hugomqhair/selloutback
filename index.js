@@ -231,8 +231,8 @@ app.post("/auth",async (req, res) => {
 app.post("/promoter", async (req, res) => {
     var ins = req.body;
     console.log(ins)
-    let query = `INSERT INTO promoter (id, nome, senha,idger) VALUES (${ins.id},UPPER('${ins.nome}'), '${ins.senha}', ${ins.idger})
-                ON CONFLICT(id) DO UPDATE SET nome=UPPER('${ins.nome}'), senha='${ins.senha}',idger=${ins.idger};`
+    let query = `INSERT INTO promoter (id, nome, senha,idger, gestor) VALUES (${ins.id},UPPER('${ins.nome}'), '${ins.senha}', ${ins.idger}, ${ins.gestor})
+                ON CONFLICT(id) DO UPDATE SET nome=UPPER('${ins.nome}'), senha='${ins.senha}',idger=${ins.idger}, gestor=${ins.gestor};`
     await insert(query).then(_=>{ 
         res.sendStatus(200)
     }) //Falta tratar erros do BD

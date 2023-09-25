@@ -7,9 +7,12 @@ CREATE TABLE promoter (
   nome varchar(50) NOT NULL UNIQUE,
   senha varchar(50),
   idger integer,
+  gestor boolean,
   dtcad timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP -- ON UPDATE CURRENT_TIMESTAMP
 );
+--ALTER TABLE promoter ADD COLUMN gestor boolean;
+--ALTER TABLE promoter DROP COLUMN gestor;
 --ALTER TABLE promoter ADD COLUMN senha VARCHAR(30);
 --ALTER TABLE promoter ADD COLUMN idger integer;
 INSERT INTO promoter (nome,senha) VALUES ('HUGO', '123');
