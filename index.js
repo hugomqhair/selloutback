@@ -23,7 +23,7 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-const httpsServer = https.createServer (credentials, app)
+const httpsServer = https.createServer(credentials, app)
 
 
 app.get("/select", auth, async (req, res) => {
@@ -301,11 +301,11 @@ app.get("/teste", async (req, res) => {
         res.send({info: "Legal Chegou"})
 })
 
-app.listen(3000, () => {
-    console.log("API RODANDO! (3000)");
-});
+// app.listen(3000, () => {
+//     console.log("API RODANDO! (3000)");
+// });
 
 // Iniciar o servidor SSL na porta 3001
-httpsServer.listen(3001, () => {
-    console.log(`Servidor Express com HTTPS está rodando na porta 3001`);
+httpsServer.listen(3000, () => {
+    console.log(`Servidor Express com HTTPS está rodando na porta 3000`);
   });
