@@ -1,4 +1,6 @@
 const express = require("express");
+const https = require('https');
+const fs = require('fs');
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors")
@@ -11,10 +13,17 @@ const deletar = require("./pg/delete")
 
 const JWTSecret = "@Matrix122221"
 
+
+// Carregar o certificado e a chave privada
+const privateKey = fs.readFileSync('./ssl/chave-privada.pem', 'utf8');
+const certificate = fs.readFileSync('./ssl/certificado.pem', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
+
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+const httpsServer = https.createServer (credentials, app)
 
 
 app.get("/select", auth, async (req, res) => {
@@ -287,6 +296,16 @@ app.post("/teste", async (req, res) => {
     }
 })
 
+app.get("/teste", async (req, res) => {
+        res.status(200)
+        res.send({info: "Legal Chegou"})
+})
+
 app.listen(3000, () => {
     console.log("API RODANDO! (3000)");
 });
+
+// Iniciar o servidor SSL na porta 3001
+httpsServer.listen(3001, () => {
+    console.log(`Servidor Express com HTTPS está rodando na porta 3001`);
+  });
