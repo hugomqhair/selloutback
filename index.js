@@ -15,9 +15,10 @@ const JWTSecret = "@Matrix122221"
 
 
 // Carregar o certificado e a chave privada
-const privateKey = fs.readFileSync('./ssl/chave-privada.pem', 'utf8');
-const certificate = fs.readFileSync('./ssl/certificado.pem', 'utf8');
+const  privateKey = fs.readFileSync('ssl/chave-privada.pem');
+const certificate  = fs.readFileSync('ssl/certificado.pem');
 const credentials = { key: privateKey, cert: certificate };
+
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
