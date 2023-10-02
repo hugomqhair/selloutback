@@ -15,16 +15,16 @@ const JWTSecret = "@Matrix122221"
 
 
 // Carregar o certificado e a chave privada
-const  privateKey = fs.readFileSync('ssl/chave-privada.pem');
-const certificate  = fs.readFileSync('ssl/certificado.pem');
-const credentials = { key: privateKey, cert: certificate };
+// const  privateKey = fs.readFileSync('ssl/chave-privada.pem');
+// const certificate  = fs.readFileSync('ssl/certificado.pem');
+// const credentials = { key: privateKey, cert: certificate };
 
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-const httpsServer = https.createServer(credentials, app)
+// const httpsServer = https.createServer(credentials, app)
 
 
 app.get("/select", auth, async (req, res) => {
@@ -194,9 +194,9 @@ app.post("/auth",async (req, res) => {
     var {usuario, senha} = req.body
     usuario = usuario.toUpperCase();
     
-    console.log('auth', usuario, senha)
+    //console.log('auth', usuario, senha)
     
-    let query = `SELECT id, nome, senha FROM promoter WHERE UPPER(nome)=UPPER('${usuario}')`
+    let query = `SELECT id, nome, senha, gestor FROM promoter WHERE UPPER(nome)=UPPER('${usuario}')`
 
     let DB = {}
     let dados = await select(query, true)
@@ -215,7 +215,7 @@ app.post("/auth",async (req, res) => {
                     }else{
                         res.status(200);
                         //console.log('Token:', {token: token, id:user.id, usuario: user.nome})
-                        res.json({token: token, id:user.id, usuario: user.nome});
+                        res.json({token: token, id:user.id, usuario: user.nome, gestor:user.gestor});
                     }
                 })
             }else{
@@ -302,11 +302,11 @@ app.get("/teste", async (req, res) => {
         res.send({info: "Legal Chegou"})
 })
 
-// app.listen(3000, () => {
-//     console.log("API RODANDO! (3000)");
-// });
+app.listen(3000, () => {
+    console.log("API RODANDO! (3000)");
+});
 
 // Iniciar o servidor SSL na porta 3001
-httpsServer.listen(3000, () => {
-    console.log(`Servidor Express com HTTPS está rodando na porta 3000`);
-  });
+// httpsServer.listen(3000, () => {
+//     console.log(`Servidor Express com HTTPS está rodando na porta 3000`);
+//   });
