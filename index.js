@@ -29,7 +29,7 @@ app.use(bodyParser.json());
 
 app.get("/select", auth, async (req, res) => {
     let consulta = req.body
-    console.log(consulta)
+    //console.log(consulta)
     res.statusCode = 200;
     let dados = await select(consulta.operacao)
     //console.log('retorno select', consulta.operacao)
@@ -124,7 +124,7 @@ app.get("/delete", async (req, res) => {
 
 app.post("/insert", async (req, res) => {
     var ins = req.body;
-    console.log(ins)
+    //console.log(ins)
     let query = `INSERT INTO TESTE01 (TEXTO, VALOR) VALUES ('${ins.texto}', ${ins.valor});`
     await insert(query)
     res.sendStatus(200);
@@ -132,7 +132,7 @@ app.post("/insert", async (req, res) => {
 
 app.post("/insertSellout", async (req, res) => {
     var ins = req.body;
-    console.log(ins)
+    //console.log(ins)
     let query = `INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (${ins.idpromoter}, ${ins.idloja}, '${ins.dtmov}');`
     let dados = await insert(query)
     //console.log(dados)
@@ -147,7 +147,7 @@ app.post("/insertSellout", async (req, res) => {
 
 
 app.post("/insertSelloutItem", async (req, res) => {
-    console.log(req.body)
+    //console.log(req.body)
     var ins = req.body;
     ins = ins.map(body => ({idproduto:body.idproduto, idsellout:body.idsellout, qtdneg:body.qtdneg, semcadastro:body.semcadastro, semestoque:body.semestoque}))
     //console.log('body', ins)
@@ -204,7 +204,7 @@ app.post("/auth",async (req, res) => {
 
     if(usuario != undefined){
 
-        //console.log(DB, DB.users[0].nome, usuario)
+        //console.log(DB, usuario)
         var user = DB.users.find(u => u.nome == usuario);
         if(user != undefined){
             if(user.senha == senha){

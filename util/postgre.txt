@@ -1,0 +1,9 @@
+--Backup
+pg_dump -h localhost -p 5432 -U postgres -d sellout > backup-2023-10-26.sql
+
+--No windows Copiar arquivos
+scp -i "debian.pem" ec2-user@ec2-15-229-10-92.sa-east-1.compute.amazonaws.com:/home/ec2-user/backup*.* .
+
+--Export File
+COPY (SELECT promoter.nome, senha, loja.nome from promoter LEFT JOIN loja ON (promoter.id = loja.idpromoter) WHERE promoter.id not in (1,2,5) order by 1) TO '/var/lib/pgsql/temp/promoter.csv' DELIMITER ';' header;
+scp -i "debian.pem" ec2-user@ec2-15-229-10-92.sa-east-1.compute.amazonaws.com:/var/lib/pgsql/temp/promoter.csv .

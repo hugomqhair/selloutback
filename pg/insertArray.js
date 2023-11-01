@@ -30,7 +30,7 @@ async function insertRecords(query, records) {
     // console.log(query)
 
     for (const record of records) {
-      console.log(query, Object.values(record))
+      //console.log(query, Object.values(record))
       resp = await client.query(insertQuery, Object.values(record));
       resultado += resp.rowCount
     }
@@ -49,7 +49,7 @@ async function insertRecords(query, records) {
     // Finaliza a transação com commit
     let resp2 = await client.query('COMMIT');
     console.log('Registros inseridos com sucesso!');
-    console.log(resp2)
+    //console.log(resp2)
   } catch (err) {
     // Caso ocorra algum erro, desfaz a transação
     await client.query('ROLLBACK');

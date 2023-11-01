@@ -1,7 +1,7 @@
 
 - Criar Menu de opções (Sair, alterar senha, etc)
 - Criar Dash de supervisor e promotor
-- Criar objetivo do promoter
+- Criar objetivo do promoter por mes e por promotor
 - Permitir contagem de estoque
 
 --Realizadas
