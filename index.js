@@ -156,7 +156,8 @@ app.post("/insertSelloutItem", async (req, res) => {
                 VALUES ($1, $2, $3, $4, $5) ON CONFLICT (idproduto, idsellout)
                 DO UPDATE SET qtdneg = $3, semcadastro=$4, semestoque=$5 ;`
     await insertArray(query, ins)
-    .then(_ => {
+    .then(resp => {
+        //console.log('RESP**', resp)
         res.sendStatus(200)
     }).catch(err => res.sendStatus(500))
 })

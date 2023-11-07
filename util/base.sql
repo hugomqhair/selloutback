@@ -154,8 +154,13 @@ LANGUAGE 'plpgsql' VOLATILE COST 100
 AS $BODY$
 DECLARE
 	DESCR VARCHAR(100);
+  POS INT;
+  DESCGRUPO VARCHAR(100);
 BEGIN
-	SELECT TRIM(REPLACE(descrprod,grupo,'')) INTO descr FROM produto WHERE id=idproduto;
+	SELECT TRIM(REPLACE(descrprod,grupo,'')) as descr, position(' ' IN descrprod) as pos, grupo INTO descr, pos, descgrupo FROM produto WHERE id=idproduto;
+  IF (SUBSTR(descr,1,pos) = SUBSTR(descgrupo,1, pos)) THEN
+    descr := TRIM(SUBSTR(descr,pos));
+  END IF;
 	RETURN descr;
 END;
 $BODY$;

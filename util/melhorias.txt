@@ -2,9 +2,13 @@
 - Criar Menu de opções (Sair, alterar senha, etc)
 - Criar Dash de supervisor e promotor
 - Criar objetivo do promoter por mes e por promotor
-- Permitir contagem de estoque
+
 
 --Realizadas
 - Criar alerta de falta de estoque
     Ao informar falta item deve ir para o fim da lista
 - Somar total de vendas por dia
+
+
+-Futuro
+- Permitir contagem de estoque
