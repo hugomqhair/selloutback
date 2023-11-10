@@ -116,6 +116,16 @@ CREATE TABLE selloutitem (
   PRIMARY KEY (idsellout, idproduto)
 );
 
+CREATE TABLE objetivopromoter (
+  ano integer NOT NULL,
+  mes integer NOT NULL,
+  idpromoter INTEGER NOT NULL REFERENCES promoter (id),
+  quant integer NOT NULL,
+  dtref DATE,
+  dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (ano, mes, idpromoter)
+);
+
 DROP TABLE SELLOUTITEM;
 DROP TABLE sellout;
 DROP TABLE produto;

@@ -163,6 +163,23 @@ app.post("/insertSelloutItem", async (req, res) => {
 })
 
 
+//Insere objetivo promoter
+app.post("/objetivopromoter", async (req, res) => {
+    console.log(req.body)
+    //var ins = req.body;
+    let ins = req.body.map(body => ({ano:body.ano, mes:body.mes, idpromoter: body.idpromoter, quant:body.quant, dtref:body.dtref}))
+    //console.log('body', ins)
+    //let {idproduto, idsellout, qtdneg} = Object.keys(ins[0])
+    let query = `INSERT INTO objetivopromoter (ano, mes, idpromoter, quant, dtref)
+                VALUES ($1, $2, $3, $4, $5) ON CONFLICT (ano, mes, idpromoter)
+                DO UPDATE SET quant = $4, dtlog=CURRENT_TIMESTAMP ;`
+    await insertArray(query, ins)
+    .then(resp => {
+        //console.log('RESP**', resp)
+        res.sendStatus(200)
+    }).catch(err => res.sendStatus(500))
+})
+
 //Login
 function auth(req, res, next){
     const authToken = req.headers['authorization'];
