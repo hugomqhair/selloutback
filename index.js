@@ -47,24 +47,33 @@ app.get("/consulta", async (req, res) => {
         isQuery = true
     } else if (consulta.operacao == 'resultadomensal'){
         query = `SELECT TO_CHAR(dtmov,'MM/YYYY') AS mes
-                        ,idpromoter
-                        ,count(id) as dias
-                        ,SUM(qtdneg) AS qtdneg
-                    FROM sellout
-                    WHERE idpromoter=${req.query.user}
-                    GROUP BY TO_CHAR(dtmov,'MM/YYYY'), idpromoter
-                    ORDER BY TO_CHAR(dtmov,'MM/YYYY') DESC;
+                    ,sellout.idpromoter
+                    ,count(id) as dias
+                    ,SUM(qtdneg) AS qtdneg
+                    ,COALESCE(op.quant,99) AS objetivo
+                FROM sellout
+                LEFT JOIN
+                    objetivopromoter op ON TO_CHAR(op.dtref, 'MM/YYYY') = TO_CHAR(sellout.dtmov, 'MM/YYYY') AND op.idpromoter = sellout.idpromoter
+                WHERE sellout.idpromoter=${req.query.user}
+                GROUP BY TO_CHAR(dtmov,'MM/YYYY'), sellout.idpromoter, op.quant
+                ORDER BY TO_CHAR(dtmov,'MM/YYYY') DESC
+
                 `
+                //=${req.query.user}
+
+
         isQuery = true
     } else if (consulta.operacao == 'resultadoAdmin'){
         query = `SELECT 
-                        (SELECT nome FROM promoter WHERE id=idpromoter) as promoter
-                        ,SUM(qtdneg) AS qtdneg
-                        ,COUNT(dtmov) AS dias
-                    FROM sellout
-                    WHERE dtmov BETWEEN  date_trunc('month', current_date) AND (date_trunc('month', current_date) + interval '1 month - 1 day')
-                    GROUP BY idpromoter
-                    ORDER BY 2;`
+                    (SELECT nome FROM promoter WHERE id=sellout.idpromoter) as promoter
+                    ,SUM(qtdneg) AS qtdneg
+                    ,COUNT(dtmov) AS dias
+                    ,COALESCE(op.quant,99) AS objetivo
+                FROM sellout
+                LEFT JOIN objetivopromoter op ON (sellout.idpromoter = op.idpromoter AND TO_CHAR(op.dtref, 'MM/YYYY') = TO_CHAR(sellout.dtmov, 'MM/YYYY'))
+                WHERE dtmov BETWEEN  date_trunc('month', current_date) AND (date_trunc('month', current_date) + interval '1 month - 1 day')
+                GROUP BY sellout.idpromoter,op.quant
+                ORDER BY 2 DESC;`
         isQuery = true
     }else {
         query = consulta.operacao 

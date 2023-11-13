@@ -1,4 +1,5 @@
 
+-Criar objeto Promotor / Mes
 - Criar Menu de opções (Sair, alterar senha, etc)
 - Criar Dash de supervisor e promotor
 - Criar objetivo do promoter por mes e por promotor
