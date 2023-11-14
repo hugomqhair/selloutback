@@ -49,7 +49,7 @@ app.get("/consulta", async (req, res) => {
         query = `SELECT TO_CHAR(dtmov,'MM/YYYY') AS mes
                     ,sellout.idpromoter
                     ,count(id) as dias
-                    ,SUM(qtdneg) AS qtdneg
+                    ,COALESCE(SUM(qtdneg),0) AS qtdneg
                     ,COALESCE(op.quant,99) AS objetivo
                 FROM sellout
                 LEFT JOIN
@@ -66,7 +66,7 @@ app.get("/consulta", async (req, res) => {
     } else if (consulta.operacao == 'resultadoAdmin'){
         query = `SELECT 
                     (SELECT nome FROM promoter WHERE id=sellout.idpromoter) as promoter
-                    ,SUM(qtdneg) AS qtdneg
+                    ,COALESCE(SUM(qtdneg),0) AS qtdneg
                     ,COUNT(dtmov) AS dias
                     ,COALESCE(op.quant,99) AS objetivo
                 FROM sellout
