@@ -72,6 +72,7 @@ app.get("/consulta", async (req, res) => {
                 FROM sellout
                 LEFT JOIN objetivopromoter op ON (sellout.idpromoter = op.idpromoter AND TO_CHAR(op.dtref, 'MM/YYYY') = TO_CHAR(sellout.dtmov, 'MM/YYYY'))
                 WHERE dtmov BETWEEN  date_trunc('month', current_date) AND (date_trunc('month', current_date) + interval '1 month - 1 day')
+                AND sellout.idpromoter NOT IN (SELECT id FROM promoter WHERE gestor=true)
                 GROUP BY sellout.idpromoter,op.quant
                 ORDER BY 2 DESC;`
         isQuery = true
