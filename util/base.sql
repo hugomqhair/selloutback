@@ -126,6 +126,12 @@ CREATE TABLE objetivopromoter (
   PRIMARY KEY (ano, mes, idpromoter)
 );
 
+CREATE TABLE loglogin (
+  idpromoter INTEGER NOT NULL REFERENCES promoter (id),
+  dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-------------------------------Outros --------------------------------
 DROP TABLE SELLOUTITEM;
 DROP TABLE sellout;
 DROP TABLE produto;

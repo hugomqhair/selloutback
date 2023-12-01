@@ -37,15 +37,15 @@ app.get("/select", auth, async (req, res) => {
 });
 
 app.get("/consulta", async (req, res) => {
-    //console.log(req.query)
+    console.log(req.query, req.params)
     //Esta consulta usa dados da query para buscar na tabela, exemplo http://localhost:3000/consulta?operacao=produto
     let consulta = req.query
-    let query 
+    let query
     let isQuery
-    if(consulta.operacao == 'loja'){
+    if (consulta.operacao == 'loja') {
         query = `SELECT id, nome, idpromoter FROM loja WHERE idpromoter=${req.query.user} ORDER BY nome`
         isQuery = true
-    } else if (consulta.operacao == 'resultadomensal'){
+    } else if (consulta.operacao == 'resultadomensal') {
         query = `SELECT TO_CHAR(dtmov,'MM/YYYY') AS mes
                     ,sellout.idpromoter
                     ,count(id) as dias
@@ -59,11 +59,15 @@ app.get("/consulta", async (req, res) => {
                 ORDER BY TO_CHAR(dtmov,'MM/YYYY') DESC
 
                 `
-                //=${req.query.user}
+        //=${req.query.user}
 
 
         isQuery = true
-    } else if (consulta.operacao == 'resultadoAdmin'){
+    } else if (consulta.operacao == 'resultadoAdmin') {
+        //console.log('params', consulta)
+        let filtrarData = `${consulta.ano}-${consulta.mes}-01`
+        //console.log(filtrarData)
+        //WHERE dtmov BETWEEN  date_trunc('month', current_date) AND (date_trunc('month', current_date) + interval '1 month - 1 day')
         query = `SELECT 
                     (SELECT nome FROM promoter WHERE id=sellout.idpromoter) as promoter
                     ,COALESCE(SUM(qtdneg),0) AS qtdneg
@@ -71,13 +75,14 @@ app.get("/consulta", async (req, res) => {
                     ,COALESCE(op.quant,99) AS objetivo
                 FROM sellout
                 LEFT JOIN objetivopromoter op ON (sellout.idpromoter = op.idpromoter AND TO_CHAR(op.dtref, 'MM/YYYY') = TO_CHAR(sellout.dtmov, 'MM/YYYY'))
-                WHERE dtmov BETWEEN  date_trunc('month', current_date) AND (date_trunc('month', current_date) + interval '1 month - 1 day')
+                WHERE dtmov BETWEEN  date_trunc('month',TO_DATE('${filtrarData}','YYYY-MM-DD')) AND (date_trunc('month', TO_DATE('${filtrarData}','YYYY-MM-DD')) + interval '1 month - 1 day')
                 AND sellout.idpromoter NOT IN (SELECT id FROM promoter WHERE gestor=true)
                 GROUP BY sellout.idpromoter,op.quant
                 ORDER BY 2 DESC;`
         isQuery = true
-    }else {
-        query = consulta.operacao 
+        //console.log(query)
+    } else {
+        query = consulta.operacao
         isQuery = false
     }
     let dados = await select(query, isQuery)
@@ -131,7 +136,7 @@ app.get("/delete", async (req, res) => {
     }
 });
 
-
+//Teste
 app.post("/insert", async (req, res) => {
     var ins = req.body;
     //console.log(ins)
@@ -146,7 +151,7 @@ app.post("/insertSellout", async (req, res) => {
     let query = `INSERT INTO sellout (idpromoter, idloja, dtmov) VALUES (${ins.idpromoter}, ${ins.idloja}, '${ins.dtmov}');`
     let dados = await insert(query)
     //console.log(dados)
-    if(dados===1){
+    if (dados === 1) {
         res.status(200).send('Dia cadastrado com sucesso!')
     } else {
         res.status(401).send(dados)
@@ -159,17 +164,17 @@ app.post("/insertSellout", async (req, res) => {
 app.post("/insertSelloutItem", async (req, res) => {
     //console.log(req.body)
     var ins = req.body;
-    ins = ins.map(body => ({idproduto:body.idproduto, idsellout:body.idsellout, qtdneg:body.qtdneg, semcadastro:body.semcadastro, semestoque:body.semestoque}))
+    ins = ins.map(body => ({ idproduto: body.idproduto, idsellout: body.idsellout, qtdneg: body.qtdneg, semcadastro: body.semcadastro, semestoque: body.semestoque }))
     //console.log('body', ins)
     //let {idproduto, idsellout, qtdneg} = Object.keys(ins[0])
     let query = `INSERT INTO selloutitem (idproduto, idsellout,qtdneg, semcadastro, semestoque)
                 VALUES ($1, $2, $3, $4, $5) ON CONFLICT (idproduto, idsellout)
                 DO UPDATE SET qtdneg = $3, semcadastro=$4, semestoque=$5 ;`
     await insertArray(query, ins)
-    .then(resp => {
-        //console.log('RESP**', resp)
-        res.sendStatus(200)
-    }).catch(err => res.sendStatus(500))
+        .then(resp => {
+            //console.log('RESP**', resp)
+            res.sendStatus(200)
+        }).catch(err => res.sendStatus(500))
 })
 
 
@@ -177,87 +182,88 @@ app.post("/insertSelloutItem", async (req, res) => {
 app.post("/objetivopromoter", async (req, res) => {
     console.log(req.body)
     //var ins = req.body;
-    let ins = req.body.map(body => ({ano:body.ano, mes:body.mes, idpromoter: body.idpromoter, quant:body.quant, dtref:body.dtref}))
+    let ins = req.body.map(body => ({ ano: body.ano, mes: body.mes, idpromoter: body.idpromoter, quant: body.quant, dtref: body.dtref }))
     //console.log('body', ins)
     //let {idproduto, idsellout, qtdneg} = Object.keys(ins[0])
     let query = `INSERT INTO objetivopromoter (ano, mes, idpromoter, quant, dtref)
                 VALUES ($1, $2, $3, $4, $5) ON CONFLICT (ano, mes, idpromoter)
                 DO UPDATE SET quant = $4, dtlog=CURRENT_TIMESTAMP ;`
     await insertArray(query, ins)
-    .then(resp => {
-        //console.log('RESP**', resp)
-        res.sendStatus(200)
-    }).catch(err => res.sendStatus(500))
+        .then(resp => {
+            //console.log('RESP**', resp)
+            res.sendStatus(200)
+        }).catch(err => res.sendStatus(500))
 })
 
 //Login
-function auth(req, res, next){
+function auth(req, res, next) {
     const authToken = req.headers['authorization'];
 
-    if(authToken != undefined){
+    if (authToken != undefined) {
 
         const bearer = authToken.split(' ');
         var token = bearer[1];
 
-        jwt.verify(token,JWTSecret,(err, data) => {
-            if(err){
+        jwt.verify(token, JWTSecret, (err, data) => {
+            if (err) {
                 res.status(401);
-                res.json({err:"Token inválido!"});
-            }else{
+                res.json({ err: "Token inválido!" });
+            } else {
 
                 req.token = token;
-                req.loggedUser = {id: data.id,usuario: data.email};
-                req.empresa = "Guia do programador";                
+                req.loggedUser = { id: data.id, usuario: data.email };
                 next();
             }
         });
-    }else{
+    } else {
         res.status(401);
-        res.json({err:"Token inválido!"});
-    } 
+        res.json({ err: "Token inválido!" });
+    }
 }
 
-app.post("/auth",async (req, res) => {
+app.post("/auth", async (req, res) => {
 
-    var {usuario, senha} = req.body
+    var { usuario, senha } = req.body
     usuario = usuario.toUpperCase();
-    
+
     //console.log('auth', usuario, senha)
-    
+
     let query = `SELECT id, nome, senha, gestor FROM promoter WHERE UPPER(nome)=UPPER('${usuario}')`
 
     let DB = {}
     let dados = await select(query, true)
     DB.users = dados
 
-    if(usuario != undefined){
+    if (usuario != undefined) {
 
         //console.log(DB, usuario)
         var user = DB.users.find(u => u.nome == usuario);
-        if(user != undefined){
-            if(user.senha == senha){
-                jwt.sign({id:user.id, usuario: user.nome},JWTSecret,{expiresIn:'48h'},(err, token) => {
-                    if(err){
+        if (user != undefined) {
+            if (user.senha == senha) {
+                jwt.sign({ id: user.id, usuario: user.nome }, JWTSecret, { expiresIn: '48h' }, (err, token) => {
+                    if (err) {
                         res.status(400);
-                        res.json({err:"Falha interna"});
-                    }else{
+                        res.json({ err: "Falha interna" });
+                    } else {
                         res.status(200);
                         //console.log('Token:', {token: token, id:user.id, usuario: user.nome})
-                        res.json({token: token, id:user.id, usuario: user.nome, gestor:user.gestor});
+                        let loglogin = `INSERT INTO loglogin (idpromoter) VALUES (${user.id});`
+                        insert(loglogin)
+                        res.json({ token: token, id: user.id, usuario: user.nome, gestor: user.gestor });
                     }
                 })
-            }else{
+            } else {
                 res.status(401);
-                res.json({err: "Credenciais inválidas!"});
+                res.json({ err: "Credenciais inválidas!" });
             }
-        }else{
+        } else {
             res.status(404);
-            res.json({err: "O usuário enviado não existe na base de dados!"});
+            res.json({ err: "O usuário enviado não existe na base de dados!" });
         }
 
-    }else{
+    } else {
         res.status(400);
-        res.send({err: "O usuário enviado é inválido"});
+        res.send({ err: "O usuário enviado é inválido" });
     }
 });
 
@@ -271,7 +277,7 @@ app.post("/promoter", async (req, res) => {
     console.log(ins)
     let query = `INSERT INTO promoter (id, nome, senha,idger, gestor) VALUES (${ins.id},UPPER('${ins.nome}'), '${ins.senha}', ${ins.idger}, ${ins.gestor})
                 ON CONFLICT(id) DO UPDATE SET nome=UPPER('${ins.nome}'), senha='${ins.senha}',idger=${ins.idger}, gestor=${ins.gestor};`
-    await insert(query).then(_=>{ 
+    await insert(query).then(_ => {
         res.sendStatus(200)
     }) //Falta tratar erros do BD
         .catch(err => {
@@ -283,11 +289,11 @@ app.post("/promoter", async (req, res) => {
 //Insere PromoterLoja
 app.post("/loja", async (req, res) => {
     var ins = req.body;
-    ins = ins.map(arr => ({id:arr.id, idpromoter:arr.idpromoter, nome:arr.nome}))
+    ins = ins.map(arr => ({ id: arr.id, idpromoter: arr.idpromoter, nome: arr.nome }))
     console.log(typeof ins, ins)
     let query = `INSERT INTO loja (id, idpromoter, nome ) VALUES ($1, $2, UPPER($3))
                 ON CONFLICT(id) DO UPDATE SET idpromoter=$2, nome=UPPER($3)`
-    await insertArray(query, ins).then(_=>{ 
+    await insertArray(query, ins).then(_ => {
         res.sendStatus(200)
     }) //Falta tratar erros do BD
         .catch(err => {
@@ -302,7 +308,7 @@ app.post("/produto", async (req, res) => {
     //console.log(typeof ins)
     let query = `INSERT INTO produto (descrprod, grupo, id) VALUES (UPPER($1), UPPER($2), $3)
                 ON CONFLICT(id) DO UPDATE SET descrprod=UPPER($1), grupo=UPPER($2);`
-    await insertArray(query, ins).then(_=>{ 
+    await insertArray(query, ins).then(_ => {
         res.sendStatus(200)
     }) //Falta tratar erros do BD
         .catch(err => {
@@ -316,18 +322,18 @@ app.post("/produto", async (req, res) => {
 app.post("/teste", async (req, res) => {
     var ins = req.body;
     console.log(ins)
-    if(ins){
+    if (ins) {
         res.status(200)
-        res.send({info: "Legal Chegou"})
+        res.send({ info: "Legal Chegou" })
     } else {
         res.status(400)
-        res.send({info: "Eroo"})
+        res.send({ info: "Eroo" })
     }
 })
 
 app.get("/teste", async (req, res) => {
-        res.status(200)
-        res.send({info: "Legal Chegou"})
+    res.status(200)
+    res.send({ info: "Legal Chegou" })
 })
 
 app.listen(3000, () => {
