@@ -6,7 +6,7 @@ const config = {
     host: 'localhost',
     database: 'sellout',
     password: 'postgres',
-    port: 5432, // Porta padrão do PostgreSQLQL
+    port: 5432, // Porta padrão do PostgreSQL
 };
 
 // Função para realizar a consulta e retornar os dados
