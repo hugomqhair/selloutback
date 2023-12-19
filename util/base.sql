@@ -28,6 +28,10 @@ CREATE TABLE loja (
     dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, -- ON UPDATE CURRENT_TIMESTAMP
     PRIMARY KEY (id)
 );
+
+
+
+
 INSERT INTO loja (id, nome, idpromoter) VALUES (1,'SUMIRE',1);
 INSERT INTO loja (id, nome, idpromoter) VALUES (2,'GOYA',2);
 INSERT INTO loja (id, nome, idpromoter) VALUES (3,'IKESAKI',1);
@@ -43,22 +47,24 @@ CREATE TABLE produto (
     dtcad timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP -- ON UPDATE CURRENT_TIMESTAMP
 );
+
+ALTER TABLE produto ADD COLUMN tipo VARCHAR(1);
 --ALTER TABLE produto ADD COLUMN grupo VARCHAR(20);
-INSERT INTO produto (descrprod,grupo) VALUES ('PRANCHA PRO 480','PRANCHA');
-INSERT INTO produto (descrprod,grupo) VALUES ('SECADOR MILLANO', 'SECADOR');
-INSERT INTO produto (descrprod,grupo) VALUES ('MAQ DE CORTE', 'MAQUINA DE CORTE');
-INSERT INTO produto (descrprod,grupo) VALUES ('ESCOVAS DES BEAUTY', 'ESCOVAS');
-INSERT INTO produto (descrprod,grupo) VALUES ('ESC ROSA BEAUTY','ESCOVAS');
-INSERT INTO produto (descrprod,grupo) VALUES ('PRANCHA 480 SLIM', 'PRANCHA');
-INSERT INTO produto (descrprod,grupo) VALUES ('SECADOR VORTEX TURBO MAX 2400W', 'SECADOR');
-INSERT INTO produto (descrprod,grupo) VALUES ('SECADOR VORTEX TURBO MAX BLACK 2400W', 'SECADOR');
-INSERT INTO produto (descrprod,grupo) VALUES ('ESC AMARELA ROSA BEAUTY','ESCOVAS');
-INSERT INTO produto (descrprod,grupo) VALUES ('ESC VERMELHA BEAUTY','ESCOVAS');
-INSERT INTO produto (descrprod,grupo) VALUES ('ESC BLACK BEAUTY','ESCOVAS');
-INSERT INTO produto (descrprod,grupo) VALUES ('MAQUINA DE CORTE FORCER BARBER', 'MAQUINA DE CORTE');
-INSERT INTO produto (descrprod,grupo) VALUES ('MAQUINA DE CORTE FORCER FADE', 'MAQUINA DE CORTE');
-INSERT INTO produto (descrprod,grupo) VALUES ('MAQUINA DE CORTE FORCER METAL', 'MAQUINA DE CORTE');
-INSERT INTO produto (descrprod,grupo) VALUES ('SECADOR VORTEX TURBO MAX ROSA 2400W LINHA ESPECIAL', 'SECADOR');
+-- INSERT INTO produto (descrprod,grupo) VALUES ('PRANCHA PRO 480','PRANCHA');
+-- INSERT INTO produto (descrprod,grupo) VALUES ('SECADOR MILLANO', 'SECADOR');
+-- INSERT INTO produto (descrprod,grupo) VALUES ('MAQ DE CORTE', 'MAQUINA DE CORTE');
+-- INSERT INTO produto (descrprod,grupo) VALUES ('ESCOVAS DES BEAUTY', 'ESCOVAS');
+-- INSERT INTO produto (descrprod,grupo) VALUES ('ESC ROSA BEAUTY','ESCOVAS');
+-- INSERT INTO produto (descrprod,grupo) VALUES ('PRANCHA 480 SLIM', 'PRANCHA');
+-- INSERT INTO produto (descrprod,grupo) VALUES ('SECADOR VORTEX TURBO MAX 2400W', 'SECADOR');
+-- INSERT INTO produto (descrprod,grupo) VALUES ('SECADOR VORTEX TURBO MAX BLACK 2400W', 'SECADOR');
+-- INSERT INTO produto (descrprod,grupo) VALUES ('ESC AMARELA ROSA BEAUTY','ESCOVAS');
+-- INSERT INTO produto (descrprod,grupo) VALUES ('ESC VERMELHA BEAUTY','ESCOVAS');
+-- INSERT INTO produto (descrprod,grupo) VALUES ('ESC BLACK BEAUTY','ESCOVAS');
+-- INSERT INTO produto (descrprod,grupo) VALUES ('MAQUINA DE CORTE FORCER BARBER', 'MAQUINA DE CORTE');
+-- INSERT INTO produto (descrprod,grupo) VALUES ('MAQUINA DE CORTE FORCER FADE', 'MAQUINA DE CORTE');
+-- INSERT INTO produto (descrprod,grupo) VALUES ('MAQUINA DE CORTE FORCER METAL', 'MAQUINA DE CORTE');
+-- INSERT INTO produto (descrprod,grupo) VALUES ('SECADOR VORTEX TURBO MAX ROSA 2400W LINHA ESPECIAL', 'SECADOR');
 
 DROP TABLE produtolojaestoque;
 CREATE TABLE produtolojaestoque (

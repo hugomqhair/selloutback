@@ -195,6 +195,26 @@ app.post("/objetivopromoter", async (req, res) => {
         }).catch(err => res.sendStatus(500))
 })
 
+//UPDATE no cadastro de Produto MQ
+app.post("/produto", async (req, res) => {
+    console.log(req.body)
+    //var ins = req.body;
+    let ins = req.body.map(body => ({ id: body.id, descrprod:body.descrprod, grupo:body.grupo, tipo: body.tipo }))
+    //console.log('body', ins)
+    //let {idproduto, idsellout, qtdneg} = Object.keys(ins[0])
+    let query = `INSERT INTO produto (id, descrprod, grupo,  tipo, dtlog)
+                    VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP) ON CONFLICT (id)
+                    DO UPDATE SET tipo = $4, dtlog=CURRENT_TIMESTAMP ;`
+    await insertArray(query, ins)
+        .then(resp => {
+            console.log('UPDATE produto: ', resp)
+            res.sendStatus(200)
+        }).catch(err => {
+            console.error(err)
+            res.sendStatus(500)
+        })
+})
+
 //Login
 function auth(req, res, next) {
     const authToken = req.headers['authorization'];
