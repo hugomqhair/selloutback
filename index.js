@@ -57,7 +57,6 @@ app.get("/consulta", async (req, res) => {
                 WHERE sellout.idpromoter=${req.query.user}
                 GROUP BY TO_CHAR(dtmov,'MM/YYYY'), sellout.idpromoter, op.quant
                 ORDER BY TO_CHAR(dtmov,'MM/YYYY') DESC
-
                 `
         //=${req.query.user}
 
@@ -81,6 +80,25 @@ app.get("/consulta", async (req, res) => {
                 ORDER BY 2 DESC;`
         isQuery = true
         //console.log(query)
+    } else if (consulta.operacao == 'resultadoAdminDetalhe') {
+        let filtrarData = `${consulta.ano}-${consulta.mes}-01`
+        query = `SELECT 
+                    (SELECT nome FROM promoter WHERE id=sellout.idpromoter) as promoter
+                    ,sellout.dtmov AS dtmov
+                    ,(SELECT nome FROM LOJA WHERE id=sellout.idloja) as loja
+                    ,prod.descrprod
+                    ,sellite.qtdneg AS qtdneg
+                    ,prod.tipo
+                FROM sellout
+                LEFT JOIN selloutitem sellite ON (sellout.id = sellite.idsellout)
+                LEFT JOIN produto prod ON (prod.id = sellite.idproduto)
+                WHERE dtmov BETWEEN  date_trunc('month',TO_DATE('${filtrarData}','YYYY-MM-DD')) AND (date_trunc('month', TO_DATE('${filtrarData}','YYYY-MM-DD')) + interval '1 month - 1 day')
+                AND sellite.qtdneg >0
+                AND sellout.idpromoter NOT IN (SELECT id FROM promoter WHERE gestor=true)
+                ORDER BY 1,2 DESC;`
+        isQuery = true
+        //console.log(query)
+
     } else {
         query = consulta.operacao
         isQuery = false
