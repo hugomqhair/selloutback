@@ -89,6 +89,7 @@ app.get("/consulta", async (req, res) => {
                     ,prod.descrprod
                     ,sellite.qtdneg AS qtdneg
                     ,prod.tipo
+                    ,sellout.id
                 FROM sellout
                 LEFT JOIN selloutitem sellite ON (sellout.id = sellite.idsellout)
                 LEFT JOIN produto prod ON (prod.id = sellite.idproduto)
@@ -215,7 +216,7 @@ app.post("/objetivopromoter", async (req, res) => {
 
 //UPDATE no cadastro de Produto MQ
 app.post("/produto", async (req, res) => {
-    console.log(req.body)
+    //console.log(req.body)
     //var ins = req.body;
     let ins = req.body.map(body => ({ id: body.id, descrprod:body.descrprod, grupo:body.grupo, tipo: body.tipo }))
     //console.log('body', ins)
@@ -231,6 +232,22 @@ app.post("/produto", async (req, res) => {
             console.error(err)
             res.sendStatus(500)
         })
+})
+
+
+//INSERT PRODSHOPPRECO
+app.post("/prodshoppreco", async (req, res) => {
+    //console.log('Chegou', req.body)
+    let ins = req.body.map(body => ({ id: body.id, descrprod:body.descrprod, tipo: body.tipo, referencia:body.referencia}))
+    //var ins = req.body;
+    console.log('Produto Shop Preço', ins)
+    //${ins.id}, '${ins.descrprod}','${ins.tipo}', '${ins.sku}'
+    let query = `INSERT INTO prodshoppreco (id, descrprod, tipo, referencia) VALUES ($1,$2,$3,$4)
+                ON CONFLICT (id) DO UPDATE SET descrprod=$2, tipo=$3, referencia=$4;`
+    await insertArray(query, ins).then(resp =>{
+        //console.log('gravar', resp)
+        res.sendStatus(200);
+    }).catch(err => console.log('ERRO: Gravar Prod Shop Preço!!',err))
 })
 
 //Login

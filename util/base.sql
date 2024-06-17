@@ -137,6 +137,18 @@ CREATE TABLE loglogin (
   dtlog timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+--DROP TABLE prodshoppreco
+CREATE TABLE prodshoppreco (
+  id   integer,
+  descrprod VARCHAR(30) UNIQUE,
+  tipo      VARCHAR(15),
+  referencia       VARCHAR(20) UNIQUE,
+  PRIMARY KEY(id)
+);
+
+
+
+
 -------------------------------Outros --------------------------------
 DROP TABLE SELLOUTITEM;
 DROP TABLE sellout;
