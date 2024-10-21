@@ -221,9 +221,9 @@ app.post("/produto", async (req, res) => {
     let ins = req.body.map(body => ({ id: body.id, descrprod:body.descrprod, grupo:body.grupo, tipo: body.tipo }))
     //console.log('body', ins)
     //let {idproduto, idsellout, qtdneg} = Object.keys(ins[0])
-    let query = `INSERT INTO produto (id, descrprod, grupo,  tipo, dtlog)
-                    VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP) ON CONFLICT (id)
-                    DO UPDATE SET tipo = $4, dtlog=CURRENT_TIMESTAMP ;`
+    let query = `INSERT INTO produto (id, descrprod, grupo,   dtlog)
+                    VALUES ($1, $2, $3, CURRENT_TIMESTAMP) ON CONFLICT (id)
+                    DO UPDATE SET dtlog=CURRENT_TIMESTAMP ;`
     await insertArray(query, ins)
         .then(resp => {
             console.log('UPDATE produto: ', resp)
