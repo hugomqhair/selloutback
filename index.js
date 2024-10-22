@@ -216,9 +216,9 @@ app.post("/objetivopromoter", async (req, res) => {
 
 //UPDATE no cadastro de Produto MQ
 app.post("/produto", async (req, res) => {
-    //console.log(req.body)
+    console.log('/produto BODY', req.body)
     //var ins = req.body;
-    let ins = req.body.map(body => ({ id: body.id, descrprod:body.descrprod, grupo:body.grupo, tipo: body.tipo }))
+    let ins = req.body.map(body => ({ id: body.id, descrprod: body.descrprod, grupo: body.grupo }))
     //console.log('body', ins)
     //let {idproduto, idsellout, qtdneg} = Object.keys(ins[0])
     let query = `INSERT INTO produto (id, descrprod, grupo,   dtlog)
@@ -235,19 +235,35 @@ app.post("/produto", async (req, res) => {
 })
 
 
+// //Insere Produto
+// app.post("/produto", async (req, res) => {
+//     var ins = req.body;
+//     //console.log(typeof ins)
+//     let query = `INSERT INTO produto (descrprod, grupo, id) VALUES (UPPER($1), UPPER($2), $3)
+//                 ON CONFLICT(id) DO UPDATE SET descrprod=UPPER($1), grupo=UPPER($2);`
+//     await insertArray(query, ins).then(_ => {
+//         res.sendStatus(200)
+//     }) //Falta tratar erros do BD
+//         .catch(err => {
+//             console.log('erro insert Promoter', err)
+//             res.send('err', err)
+//         })
+// })
+
+
 //INSERT PRODSHOPPRECO
 app.post("/prodshoppreco", async (req, res) => {
     //console.log('Chegou', req.body)
-    let ins = req.body.map(body => ({ id: body.id, descrprod:body.descrprod, tipo: body.tipo, referencia:body.referencia}))
+    let ins = req.body.map(body => ({ id: body.id, descrprod: body.descrprod, tipo: body.tipo, referencia: body.referencia }))
     //var ins = req.body;
     console.log('Produto Shop Preço', ins)
     //${ins.id}, '${ins.descrprod}','${ins.tipo}', '${ins.sku}'
     let query = `INSERT INTO prodshoppreco (id, descrprod, tipo, referencia) VALUES ($1,$2,$3,$4)
                 ON CONFLICT (id) DO UPDATE SET descrprod=$2, tipo=$3, referencia=$4;`
-    await insertArray(query, ins).then(resp =>{
+    await insertArray(query, ins).then(resp => {
         //console.log('gravar', resp)
         res.sendStatus(200);
-    }).catch(err => console.log('ERRO: Gravar Prod Shop Preço!!',err))
+    }).catch(err => console.log('ERRO: Gravar Prod Shop Preço!!', err))
 })
 
 //Login
@@ -357,20 +373,7 @@ app.post("/loja", async (req, res) => {
         })
 })
 
-//Insere Produto
-app.post("/produto", async (req, res) => {
-    var ins = req.body;
-    //console.log(typeof ins)
-    let query = `INSERT INTO produto (descrprod, grupo, id) VALUES (UPPER($1), UPPER($2), $3)
-                ON CONFLICT(id) DO UPDATE SET descrprod=UPPER($1), grupo=UPPER($2);`
-    await insertArray(query, ins).then(_ => {
-        res.sendStatus(200)
-    }) //Falta tratar erros do BD
-        .catch(err => {
-            console.log('erro insert Promoter', err)
-            res.send('err', err)
-        })
-})
+
 
 
 //apenas testes
